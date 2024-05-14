@@ -3,34 +3,34 @@
     switch ($_SERVER['REQUEST_METHOD']) {
         case 'POST':
             $data = json_decode(file_get_contents('php://input'), true);
-            $username = $data['username'];
-            $password = $data['password'];
-            $response = add_user($username, $password);
+            $name = $data['name'];
+            $plateforme = $data['plateforme'];
+            $response = add_movie($name,$plateforme);
             deliver_response($response["code"], $response["message"], $response["data"]);
             break;
         case 'GET':
             $data = json_decode(file_get_contents('php://input'), true);
-            if(isset($data['username'])){
-                $username = $data['username'];
-                $response = get_user($username);
+            if(isset($data['name'])){
+                $name = $data['name'];
+                $response = get_movie($name);
             }else{
-                $response = get_all_user();
+                $response = get_all_movie();
             }
             deliver_response($response["code"], $response["message"], $response["data"]);
             break;
         case 'DELETE':
             $data = json_decode(file_get_contents('php://input'), true);
-            $username = $data['username'];
-            $response = archive_user($username);
+            $name = $data['name'];
+            $response = archive_movie($name);
             deliver_response($response["code"], $response["message"], $response["data"]);
             break;
         case 'PATCH':
             $data = json_decode(file_get_contents('php://input'), true);
             $id = $data["id"];
-            $response = get_user_id($id);
-            $username = isset($data['username'])?$data['username']:$response["data"]["username"];
-            $password = isset($data['password'])?$data['password']:$response["data"]["password"];
-            $response = update_user($username, $password, $id);
+            $response = get_movie_id($id);
+            $name = isset($data['name'])?$data['name']:$response["data"]["name"];
+            $plateforme = isset($data['plateforme'])?$data['plateforme']:$response["data"]["plateforme"];
+            $response = update_movie($name, $plateforme, $id);
             deliver_response($response["code"], $response["message"], $response["data"]);
             break;
         default:

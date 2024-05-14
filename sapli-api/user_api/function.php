@@ -59,11 +59,30 @@
         return array("code"=>$code, "message"=>$message, "data"=>$user);
     }
 
-    function archive_user($username){// TODO: ajouter desarchiver
+    function get_user_id($id){
         global $db;
         $code=500;
         $message = 'erreur serveur';
-        $req1 = $db->prepare('UPDATE user SET archive = 1 WHERE username = :username ');
+        $req1 = $db->prepare('SELECT * FROM user WHERE id_user = :id');
+        $req1->execute(array(
+            'id' => $id,
+        ));
+        $user = $req1->fetch();
+        if(isset($user['username'])){
+            $code=200;
+            $message = 'user trouve';
+        }else{
+            $code=404;
+            $message = 'user non trouve';
+        }
+        return array("code"=>$code, "message"=>$message, "data"=>$user);
+    }
+
+    function archive_user($username){
+        global $db;
+        $code=500;
+        $message = 'erreur serveur';
+        $req1 = $db->prepare('UPDATE user SET archive = not(archive) WHERE username = :username ');
         $req1->execute(array(
             'username' => $username,
         ));
@@ -71,8 +90,33 @@
             $code=200;
             $message = 'user archive';
         }else{
-            $code=404;
-            $message = 'user non trouve';
+            $code=500;
+            $message = 'erreur serveur';
+        }
+        return array("code"=>$code, "message"=>$message, "data"=>null);
+    }
+
+    function update_user ($username, $password, $id){
+        global $db;
+        $code=500;
+        $message = 'erreur serveur';
+        $req1 = $db->prepare('UPDATE user SET password = :password , username = :username WHERE id_user = :id');
+        $req1->execute(array(
+            'id' => $id,
+            'username' => $username,
+            'password' => hash('sha256',$password),
+        ));
+        if($req1){
+            if($req1->rowCount()>0){
+                $code=200;
+                $message = 'user modifie';
+            }else{
+                $code=400;
+                $message = 'user non trouve';
+            }
+        }else{
+            $code=500;
+            $message = 'erreur serveur';
         }
         return array("code"=>$code, "message"=>$message, "data"=>null);
     }
