@@ -2,11 +2,12 @@
     ini_set( "display_errors", 1);
     require('../connexion.php');
 
-    function add_movie_phobia($id_movie, $id_phobia, $time_code, $upvote, $downvote){
+    function add_movie_phobia($id_movie, $id_phobia, $time_code, $upvote, $downvote, $time_code_end){
         global $db;
         $code=500;
+        var_dump($id_movie, $id_phobia, $time_code, $upvote, $downvote, $time_code_end);
         $message = 'erreur serveur';
-        $req1 = $db->prepare('INSERT INTO movie_phobia (id_movie, id_phobia, time_code, up_vote, down_vote) VALUES(:id_movie, :id_phobia, :time_code, :upvote, :downvote)');
+        $req1 = $db->prepare('INSERT INTO movie_phobia (id_movie, id_phobia, time_code, time_code_end, up_vote, down_vote) VALUES(:id_movie, :id_phobia, :time_code, :time_code_end, :up_vote, :down_vote)');
         if ($req1){
             $code=401;
             $message = 'parametre manquant ou invalide';
@@ -15,8 +16,9 @@
                 'id_movie' => $id_movie,
                 'id_phobia' => $id_phobia,
                 'time_code' => $time_code,
-                'upvote' => $upvote,
-                'downvote' => $downvote,
+                'time_code_end' => $time_code_end,
+                'up_vote' => $upvote,
+                'down_vote' => $downvote,
                 ));
                 if($req1){
                     $code=201;

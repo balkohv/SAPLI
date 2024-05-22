@@ -1,4 +1,8 @@
 <?php
+    header("Access-Control-Allow-Origin: *");
+    header("Access-Control-Allow-Methods: GET, POST, PATCH, DELETE, OPTIONS");
+    header("Access-Control-Allow-Headers: Content-Type");
+    header("Content-Type: application/json");
     require('function.php');
     switch ($_SERVER['REQUEST_METHOD']) {
         case 'POST':
@@ -10,8 +14,8 @@
             break;
         case 'GET':
             $data = json_decode(file_get_contents('php://input'), true);
-            if(isset($data['name'])){
-                $name = $data['name'];
+            if(isset($_GET['name'])){
+                $name = $_GET['name'];
                 $response = get_phobia($name);
             }else{
                 $response = get_all_phobia();
@@ -32,6 +36,9 @@
             $nb_subscribers = isset($data['nb_subscribers'])?$data['nb_subscribers']:$response["data"]["nb_subscribers"];
             $response = update_phobia($name, $nb_subscribers, $id);
             deliver_response($response["code"], $response["message"], $response["data"]);
+            break;
+        case 'OPTIONS':
+            http_response_code(200);
             break;
         default:
             http_response_code(405);

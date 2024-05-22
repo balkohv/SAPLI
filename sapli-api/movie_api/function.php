@@ -2,17 +2,19 @@
     ini_set( "display_errors", 1);
     require('../connexion.php');
 
-    function add_movie($name, $plateforme){
+    function add_movie($name, $plateforme, $duration, $episode){
         global $db;
         $code=00;
         $message = 'erreur serveur';
-        $req1 = $db->prepare('INSERT INTO movie (name, plateforme) VALUES(:name, :plateforme)');
+        $req1 = $db->prepare('INSERT INTO movie (name, plateforme,episode,duration) VALUES(:name, :plateforme, :episode, :duration)');
         if ($req1){
             $code=401;
             $message = 'parametre manquant ou invalide';
             $req1->execute(array(
                 'name' => $name,
                 'plateforme' => $plateforme,
+                'episode' => $episode,
+                'duration' => $duration,
             ));
             if($req1){
                 $code=201;
@@ -21,13 +23,14 @@
         }
         return array("code"=>$code, "message"=>$message, "data"=>null);
     }
-    function get_movie($name){
+    function get_movie($name,$plateforme){
         global $db;
         $code=500;
         $message = 'erreur serveur';
-        $req1 = $db->prepare('SELECT * FROM movie WHERE name = :name and archive = 0');
+        $req1 = $db->prepare('SELECT * FROM movie WHERE name = :name and plateforme = :plateforme and archive = 0');
         $req1->execute(array(
             'name' => $name,
+            'plateforme' => $plateforme,
         ));
         $movie = $req1->fetch();
         if(isset($movie['name'])){
@@ -39,6 +42,26 @@
         }
         return array("code"=>$code, "message"=>$message, "data"=>$movie);
         
+    }
+    function get_serie($name,$episode,$plateforme,$duration){
+        global $db;
+        $code=500;
+        $message = 'erreur serveur';
+        $req1 = $db->prepare('SELECT * FROM movie WHERE name = :name and episode = :episode and plateforme = :plateforme and archive = 0');
+        $req1->execute(array(
+            'name' => $name,
+            'episode' => $episode,
+            'plateforme' => $plateforme,
+        ));
+        $movie = $req1->fetch();
+        if(isset($movie['name'])){
+            $code=200;
+            $message = 'serie trouve';
+        }else{
+            $code=404;
+            $message = 'serie non trouve';
+        }
+        return array("code"=>$code, "message"=>$message, "data"=>$movie);
     }
 
     function get_all_movie(){
