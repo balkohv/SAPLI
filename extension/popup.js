@@ -11,12 +11,7 @@ $(document).ready(function () {
           browser_id: result.uniqueId
         }),
         success: function (data) {
-          console.log(getTab());
-          if (getTab() == "www.netflix.com") {
-            window.location.href = "signal.html";
-          } else {
             window.location.href = "home.html";
-          }
         }
       });
       console.log('Unique ID already exists');
@@ -98,11 +93,5 @@ $(document).ready(function () {
         console.log('Unique ID already exists');
       }
     });
-  }
-
-  async function getTab() {
-    let queryOptions = { active: true, currentWindow: true };
-    let tabs = await chrome.tabs.query(queryOptions);
-    return tabs[0].url;
   }
 });
