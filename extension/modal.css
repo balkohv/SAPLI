@@ -73,7 +73,26 @@ svg{
 #pin2:hover path{
     fill: #ec2525 !important;
 }
+
 #submit:hover{
     background: #ec2525;
 }
 
+#skip_button{
+    z-index:100;
+    position: absolute;
+    height: 35px;
+    width: 141px;
+    background: #f0f8ff33;
+    color: #ffffffb8;
+    font-size: 16px;
+    border: none;
+    cursor: pointer;
+    bottom: 10em;
+    right: 50px;
+}
+
+#skip_button:hover{
+    background: #ffffff44;
+    color: white;
+}

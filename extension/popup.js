@@ -4,14 +4,17 @@ $(document).ready(function () {
     console.log(result);
     if (result.uniqueId) {
       $.ajax({
-        url: "http://localhost/sapli/sapli/sapli-api/user_api/dispatch.php",
+        url: "https://93.8.28.18:80/sapli-api/user_api/dispatch.php",
+        headers: {
+          Authorization: 'Bearer ' + get_token()
+        },
         type: "GET",
         contentType: "application/json",
         data: JSON.stringify({
           browser_id: result.uniqueId
         }),
         success: function (data) {
-            window.location.href = "home.html";
+          window.location.href = "home.html";
         }
       });
       console.log('Unique ID already exists');
@@ -32,7 +35,10 @@ $(document).ready(function () {
     var username = $("#username").val();
     var password = hashPassword($("#password").val());
     $.ajax({
-      url: "http://localhost/sapli/sapli/sapli-api/user_api/dispatch.php",
+      url: "https://93.8.28.18:80/sapli-api/user_api/dispatch.php",
+      headers: {
+        Authorization: 'Bearer ' + get_token()
+      },
       type: "POST",
       data: JSON.stringify({
         email: email,
@@ -42,7 +48,10 @@ $(document).ready(function () {
       success: function (data) {
         console.log(data);
         $.ajax({
-          url: "http://localhost/sapli/sapli/sapli-api/user_api/dispatch.php",
+          url: "https://93.8.28.18:80/sapli-api/user_api/dispatch.php",
+          headers: {
+            Authorization: 'Bearer ' + get_token()
+          },
           type: "POST",
           data: JSON.stringify({
             username: username,
@@ -60,7 +69,10 @@ $(document).ready(function () {
     var username = $("#username_login").val();
     var password = hashPassword($("#password_login").val());
     $.ajax({
-      url: "http://localhost/sapli/sapli/sapli-api/user_api/dispatch.php",
+      url: "https://93.8.28.18:80/sapli-api/user_api/dispatch.php",
+      headers: {
+        Authorization: 'Bearer ' + get_token()
+      },
       type: "POST",
       contentType: "application/json",
       data: JSON.stringify({
@@ -91,6 +103,22 @@ $(document).ready(function () {
         });
       } else {
         console.log('Unique ID already exists');
+      }
+    });
+  }
+
+
+  function get_token() {
+    $.ajax({
+      url: "https://93.8.28.18:80/sapli-auth/dispatch.php",
+      type: "POST",
+      contentType: "application/json",
+      data: JSON.stringify({
+        "username": "test", //FIXME: changer les identifiants
+        "password": "test"
+      }),
+      success: function (data) {
+        return data["data"];
       }
     });
   }

@@ -2,12 +2,11 @@
     require('jwt_utils.php');
     require('deliverResponse.php');
 
-    /* if(get_bearer_token() == null){
+    if(get_bearer_token() == null){
         deliver_response(401, "Token needed", null);
         exit();
     }
-    $url = "http://localhost/R3.01/projet/auth/dispatch.php";
-    
+    $url = "http://192.168.1.59/SAPLI/sapli-auth/dispatch.php";
     $ch = curl_init();
     curl_setopt($ch, CURLOPT_URL, $url);
     curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
@@ -20,9 +19,8 @@
     $api_output =  curl_exec($ch);
     $json_output = json_decode($api_output);
     $output = $json_output?$json_output:$api_output;
-
     curl_close($ch);
-    if($output->status_code == 200){*/
+    if($output->status_code == 200){
         $username ="root";
         $pwd = "Micheldu15*";  
         try {
@@ -32,18 +30,12 @@
             print "Erreur !: " . $e->getMessage() . "<br/>";
             die();
         }
-
-        /* try{
-            $conn = new PDO('mysql:host=localhost;port=3306;dbname=projet_php',$username,$pwd);
-        }
-        catch (Exception $e)
-        {
-            print "Erreur !: " . $e->getMessage() . "<br/>";
-            die();
-        }
+    }elseif (!$output){
+        deliver_response(500, "api authentification error", null);
+        exit();
     }else{
         deliver_response($output->status_code, $output->status_message, $output->data);
         exit();
-    } */
+    }
 
 ?>

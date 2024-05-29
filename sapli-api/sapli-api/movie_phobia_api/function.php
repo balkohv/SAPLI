@@ -2,7 +2,7 @@
     ini_set( "display_errors", 1);
     require('../connexion.php');
 
-    function add_movie_phobia($id_movie, $id_phobia, $time_code, $upvote, $downvote, $time_code_end){
+    function add_movie_phobia($id_movie, $id_phobia, $time_code, $time_code_end, $upvote, $downvote){
         global $db;
         $code=500;
         var_dump($id_movie, $id_phobia, $time_code, $upvote, $downvote, $time_code_end);
@@ -18,7 +18,7 @@
                 'time_code' => $time_code,
                 'time_code_end' => $time_code_end,
                 'up_vote' => $upvote,
-                'down_vote' => $downvote,
+                'down_vote' => $downvote
                 ));
                 if($req1){
                     $code=201;
@@ -45,7 +45,7 @@
             'id_movie' => $id_movie,
             'id_phobia' => $id_phobia,
         ));
-        $movie_phobia = $req1->fetch();
+        $movie_phobia = $req1->fetchAll();
         if(isset($movie_phobia['id_movie'])){
             $code=200;
             $message = 'lien trouve';
