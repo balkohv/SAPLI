@@ -94,19 +94,29 @@ $(document).ready(async function () {
         });
     });
 
-
     $.ajax({
-        url: "https://93.8.28.18:80/sapli-api/phobia_api/dispatch.php",
-        headers: {
-            Authorization: 'Bearer ' + get_token()
-        },
-        type: "GET",
+        url: "https://93.8.28.18:80/sapli-auth/dispatch.php",
+        type: "POST",
         contentType: "application/json",
+        data: JSON.stringify({
+            "login": "test", //FIXME: changer les identifiants
+            "mdp": "test"
+        }),
         success: function (data) {
-            console.log(data);
-            phobia_array = data["data"];
+            token = data["data"];
+            $.ajax({
+                url: "https://93.8.28.18:80/sapli-api/phobia_api/dispatch.php",
+                headers: {
+                    Authorization: 'Bearer ' + token
+                },
+                type: "GET",
+                contentType: "application/json",
+                success: function (data) {
+                    console.log(data);
+                    phobia_array = data["data"];
+                }
+            });
         }
-
     });
 
     // $("head").append('<link rel="stylesheet" type="text/css" href="https://93.8.28.18:82/modal.css">');
@@ -122,31 +132,43 @@ $(document).ready(async function () {
             }
             browser_id = result.uniqueId;
             $.ajax({
-                url: "https://93.8.28.18:80/sapli-api/user_api/dispatch.php",
-                headers: {
-                    Authorization: 'Bearer ' + get_token()
-                },
-                type: "GET",
+                url: "https://93.8.28.18:80/sapli-auth/dispatch.php",
+                type: "POST",
                 contentType: "application/json",
-                data: {
-                    "browser_id": browser_id
-                },
+                data: JSON.stringify({
+                    "login": "test", //FIXME: changer les identifiants
+                    "mdp": "test"
+                }),
                 success: function (data) {
-                    user = data["data"];
+                    token = data["data"];
                     $.ajax({
-                        url: "https://93.8.28.18:80/sapli-api/user_phobia_api/dispatch.php",
+                        url: "https://93.8.28.18:80/sapli-api/user_api/dispatch.php",
                         headers: {
-                            Authorization: 'Bearer ' + get_token()
+                            Authorization: 'Bearer ' + token
                         },
                         type: "GET",
                         contentType: "application/json",
                         data: {
-                            "id_user": user.id_user,
-                            "id_movie": movie.id_movie
+                            "browser_id": browser_id
                         },
                         success: function (data) {
-                            console.log(data);
-                            phobias_movie = data["data"];
+                            user = data["data"];
+                            $.ajax({
+                                url: "https://93.8.28.18:80/sapli-api/user_phobia_api/dispatch.php",
+                                headers: {
+                                    Authorization: 'Bearer ' + token
+                                },
+                                type: "GET",
+                                contentType: "application/json",
+                                data: {
+                                    "id_user": user.id_user,
+                                    "id_movie": movie.id_movie
+                                },
+                                success: function (data) {
+                                    console.log(data);
+                                    phobias_movie = data["data"];
+                                }
+                            });
                         }
                     });
                 }
@@ -158,69 +180,81 @@ $(document).ready(async function () {
     function info_loaded(title, episode, duration) {
         console.log("titre:", title, "episode:", episode, "duration:", duration);
         $.ajax({
-            method: "GET",
-            url: "https://93.8.28.18:80/sapli-api/movie_api/dispatch.php",
-            headers: {
-                Authorization: 'Bearer ' + get_token()
-            },
+            url: "https://93.8.28.18:80/sapli-auth/dispatch.php",
+            type: "POST",
             contentType: "application/json",
-            dataType: "json",
-            data: {
-                plateform: "Netflix",
-                name: title,
-                episode: episode,
-                duration: duration
-            },
+            data: JSON.stringify({
+                "login": "test", //FIXME: changer les identifiants
+                "mdp": "test"
+            }),
             success: function (data) {
-                console.log(data);
-                movie = data["data"];
-                search_phobias();
-            },
-            error: function (data) {
-                console.log(data);
-                if (data.status == 404) {
-                    $.ajax({
-                        method: "POST",
-                        url: "https://93.8.28.18:80/sapli-api/movie_api/dispatch.php",
-                        headers: {
-                            Authorization: 'Bearer ' + get_token()
-                        },
-                        contentType: "application/json",
-                        dataType: "json",
-                        data: JSON.stringify({
-                            plateform: "Netflix",
-                            name: title,
-                            episode: episode,
-                            duration: duration
-                        }),
-                        success: function (data) {
-                            console.log(data);
+                token = data["data"];
+                $.ajax({
+                    method: "GET",
+                    url: "https://93.8.28.18:80/sapli-api/movie_api/dispatch.php",
+                    headers: {
+                        Authorization: 'Bearer ' + token
+                    },
+                    contentType: "application/json",
+                    dataType: "json",
+                    data: {
+                        plateform: "Netflix",
+                        name: title,
+                        episode: episode,
+                        duration: duration
+                    },
+                    success: function (data) {
+                        console.log(data);
+                        movie = data["data"];
+                        search_phobias();
+                    },
+                    error: function (data) {
+                        console.log(data);
+                        if (data.status == 404) {
                             $.ajax({
-                                method: "GET",
+                                method: "POST",
                                 url: "https://93.8.28.18:80/sapli-api/movie_api/dispatch.php",
                                 headers: {
-                                    Authorization: 'Bearer ' + get_token()
+                                    Authorization: 'Bearer ' + token
                                 },
                                 contentType: "application/json",
                                 dataType: "json",
-                                data: {
+                                data: JSON.stringify({
                                     plateform: "Netflix",
                                     name: title,
                                     episode: episode,
                                     duration: duration
-                                },
+                                }),
                                 success: function (data) {
                                     console.log(data);
-                                    movie = data["data"];
-                                    search_phobias();
+                                    $.ajax({
+                                        method: "GET",
+                                        url: "https://93.8.28.18:80/sapli-api/movie_api/dispatch.php",
+                                        headers: {
+                                            Authorization: 'Bearer ' + token
+                                        },
+                                        contentType: "application/json",
+                                        dataType: "json",
+                                        data: {
+                                            plateform: "Netflix",
+                                            name: title,
+                                            episode: episode,
+                                            duration: duration
+                                        },
+                                        success: function (data) {
+                                            console.log(data);
+                                            movie = data["data"];
+                                            search_phobias();
+                                        }
+                                    });
+                                },
+                                error: function (data) {
+                                    console.log(data);
                                 }
                             });
-                        },
-                        error: function (data) {
-                            console.log(data);
                         }
-                    });
-                }
+                    }
+                });
             }
         });
     }
@@ -388,22 +422,34 @@ $(document).ready(async function () {
             return;
         }
         $.ajax({
-            url: "https://93.8.28.18:80/sapli-api/movie_phobia_api/dispatch.php",
-            headers: {
-                Authorization: 'Bearer ' + get_token()
-            },
+            url: "https://93.8.28.18:80/sapli-auth/dispatch.php",
             type: "POST",
             contentType: "application/json",
             data: JSON.stringify({
-                "id_movie": id_movie,
-                "id_phobia": id_phobia,
-                "time_code": start_time,
-                "time_end": end_time
+                "login": "test", //FIXME: changer les identifiants
+                "mdp": "test"
             }),
             success: function (data) {
-                if (document.getElementById("skip_button")) {
-                    document.getElementById("skip_button").remove();
-                }
+                token = data["data"];
+                $.ajax({
+                    url: "https://93.8.28.18:80/sapli-api/movie_phobia_api/dispatch.php",
+                    headers: {
+                        Authorization: 'Bearer ' + token
+                    },
+                    type: "POST",
+                    contentType: "application/json",
+                    data: JSON.stringify({
+                        "id_movie": id_movie,
+                        "id_phobia": id_phobia,
+                        "time_code": start_time,
+                        "time_end": end_time
+                    }),
+                    success: function (data) {
+                        if (document.getElementById("skip_button")) {
+                            document.getElementById("skip_button").remove();
+                        }
+                    }
+                });
             }
         });
     }
@@ -424,20 +470,5 @@ $(document).ready(async function () {
             }
         });
 
-    }
-
-    function get_token() {
-            $.ajax({
-                url: "https://93.8.28.18:80/sapli-auth/dispatch.php",
-                type: "POST",
-                contentType: "application/json",
-                data: JSON.stringify({
-                    "username": "test", //FIXME: changer les identifiants
-                    "password": "test"
-                }),
-                success: function (data) {
-                    return data["data"];
-                }
-            });
     }
 });

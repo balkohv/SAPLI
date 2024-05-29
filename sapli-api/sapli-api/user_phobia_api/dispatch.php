@@ -1,7 +1,7 @@
 <?php
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: GET, POST, PATCH, DELETE, OPTIONS");
-header("Access-Control-Allow-Headers: Content-Type");
+header("Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept, Authorization");
 header("Content-Type: application/json");
 require ('function.php');
 switch ($_SERVER['REQUEST_METHOD']) {
@@ -16,7 +16,7 @@ switch ($_SERVER['REQUEST_METHOD']) {
     case 'GET':
         if (isset($_GET['id_movie']) && isset($_GET['id_user'])) {
             $response = get_time_code($_GET['id_movie'], $_GET['id_user']);
-        }elseif (isset($_GET['id_user'])) {
+        } elseif (isset($_GET['id_user'])) {
             $id_user = $_GET['id_user'];
             $response = get_user_phobia($id_user);
         } else {

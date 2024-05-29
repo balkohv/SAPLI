@@ -1,22 +1,35 @@
 $(document).ready(function () {
-
+  var token = null;
   if (chrome.storage.local.get('uniqueId', (result) => {
     console.log(result);
     if (result.uniqueId) {
       $.ajax({
-        url: "https://93.8.28.18:80/sapli-api/user_api/dispatch.php",
-        headers: {
-          Authorization: 'Bearer ' + get_token()
-        },
-        type: "GET",
+        url: "https://93.8.28.18:80/sapli-auth/dispatch.php",
+        type: "POST",
         contentType: "application/json",
         data: JSON.stringify({
-          browser_id: result.uniqueId
+          "login": "test", //FIXME: changer les identifiants
+          "mdp": "test"
         }),
         success: function (data) {
-          window.location.href = "home.html";
+          token = data["data"];
+          $.ajax({
+            url: "https://93.8.28.18:80/sapli-api/user_api/dispatch.php",
+            headers: {
+              Authorization: 'Bearer ' + token
+            },
+            type: "GET",
+            contentType: "application/json",
+            data: JSON.stringify({
+              browser_id: result.uniqueId
+            }),
+            success: function (data) {
+              window.location.href = "home.html";
+            }
+          });
         }
       });
+
       console.log('Unique ID already exists');
     }
   }));
@@ -35,27 +48,73 @@ $(document).ready(function () {
     var username = $("#username").val();
     var password = hashPassword($("#password").val());
     $.ajax({
-      url: "https://93.8.28.18:80/sapli-api/user_api/dispatch.php",
-      headers: {
-        Authorization: 'Bearer ' + get_token()
-      },
+      url: "https://93.8.28.18:80/sapli-auth/dispatch.php",
       type: "POST",
+      contentType: "application/json",
       data: JSON.stringify({
-        email: email,
-        username: username,
-        password: $("#password").val()
+        "login": "test", //FIXME: changer les identifiants
+        "mdp": "test"
       }),
       success: function (data) {
-        console.log(data);
+        token = data["data"];
         $.ajax({
           url: "https://93.8.28.18:80/sapli-api/user_api/dispatch.php",
           headers: {
-            Authorization: 'Bearer ' + get_token()
+            Authorization: 'Bearer ' + token
           },
           type: "POST",
           data: JSON.stringify({
+            email: email,
             username: username,
             password: $("#password").val()
+          }),
+          success: function (data) {
+            console.log(data);
+            $.ajax({
+              url: "https://93.8.28.18:80/sapli-api/user_api/dispatch.php",
+              headers: {
+                Authorization: 'Bearer ' + token
+              },
+              type: "POST",
+              data: JSON.stringify({
+                username: username,
+                password: $("#password").val()
+              }),
+              success: function (data) {
+                console.log(data);
+                store_browser_id(data['data']);
+              }
+            });
+          }
+        });
+      }
+    });
+
+  });
+
+  $("#submit_login").click(function () {
+    var username = $("#username_login").val();
+    var password = hashPassword($("#password_login").val());
+    $.ajax({
+      url: "https://93.8.28.18:80/sapli-auth/dispatch.php",
+      type: "POST",
+      contentType: "application/json",
+      data: JSON.stringify({
+        "login": "test", //FIXME: changer les identifiants
+        "mdp": "test"
+      }),
+      success: function (data) {
+        token = data["data"];
+        $.ajax({
+          url: "https://93.8.28.18:80/sapli-api/user_api/dispatch.php",
+          headers: {
+            Authorization: 'Bearer ' + token
+          },
+          type: "POST",
+          contentType: "application/json",
+          data: JSON.stringify({
+            username: username,
+            password: $("#password_login").val()
           }),
           success: function (data) {
             console.log(data);
@@ -64,26 +123,7 @@ $(document).ready(function () {
         });
       }
     });
-  });
-  $("#submit_login").click(function () {
-    var username = $("#username_login").val();
-    var password = hashPassword($("#password_login").val());
-    $.ajax({
-      url: "https://93.8.28.18:80/sapli-api/user_api/dispatch.php",
-      headers: {
-        Authorization: 'Bearer ' + get_token()
-      },
-      type: "POST",
-      contentType: "application/json",
-      data: JSON.stringify({
-        username: username,
-        password: $("#password_login").val()
-      }),
-      success: function (data) {
-        console.log(data);
-        store_browser_id(data['data']);
-      }
-    });
+
   });
   async function hashPassword(password) {
     const encoder = new TextEncoder();
@@ -107,19 +147,4 @@ $(document).ready(function () {
     });
   }
 
-
-  function get_token() {
-    $.ajax({
-      url: "https://93.8.28.18:80/sapli-auth/dispatch.php",
-      type: "POST",
-      contentType: "application/json",
-      data: JSON.stringify({
-        "username": "test", //FIXME: changer les identifiants
-        "password": "test"
-      }),
-      success: function (data) {
-        return data["data"];
-      }
-    });
-  }
 });

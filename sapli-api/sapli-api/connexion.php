@@ -1,6 +1,10 @@
 <?php
-    require('jwt_utils.php');
     require('deliverResponse.php');
+    require('jwt_utils.php');
+    if($_SERVER['REQUEST_METHOD']=="OPTIONS"){
+        http_response_code(200);
+        exit();
+    }
 
     if(get_bearer_token() == null){
         deliver_response(401, "Token needed", null);

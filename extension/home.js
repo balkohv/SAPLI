@@ -5,6 +5,7 @@ $(document).ready(function () {
     var og_phobies = [];
     arr_phobies = [];
     var browser_id = null;
+    token = null;
     chrome.storage.local.get('auto', (result) => {
         if (result.auto != null) {
             $("#auto" + result.auto).prop('checked', true);
@@ -16,44 +17,56 @@ $(document).ready(function () {
     chrome.storage.local.get('uniqueId', (result) => {
         browser_id = result.uniqueId;
         $.ajax({
-            url: "https://93.8.28.18:80/sapli-api/user_api/dispatch.php",
-            headers: {
-                Authorization: 'Bearer ' + get_token()
-            },
-            type: "GET",
+            url: "https://93.8.28.18:80/sapli-auth/dispatch.php",
+            type: "POST",
             contentType: "application/json",
-            data: {
-                "browser_id": browser_id
-            },
+            data: JSON.stringify({
+                "login": "test", //FIXME: changer les identifiants
+                "mdp": "test"
+            }),
             success: function (data) {
-                user = data["data"];
+                token = data["data"];
                 $.ajax({
-                    url: "https://93.8.28.18:80/sapli-api/phobia_api/dispatch.php",
+                    url: "https://93.8.28.18:80/sapli-api/user_api/dispatch.php",
                     headers: {
-                        Authorization: 'Bearer ' + get_token()
+                        Authorization: 'Bearer ' + token
                     },
                     type: "GET",
                     contentType: "application/json",
+                    data: {
+                        "browser_id": browser_id
+                    },
                     success: function (data) {
-                        data["data"].forEach(element => {
-                            $("#checkboxes").html($("#checkboxes").html() + "<label for='" + element['id_phobia'] + "'><input type='checkbox' id=" + element['id_phobia'] + " />" + element['name'] + "</label>");
-                        });
+                        user = data["data"];
                         $.ajax({
-                            url: "https://93.8.28.18:80/sapli-api/user_phobia_api/dispatch.php",
+                            url: "https://93.8.28.18:80/sapli-api/phobia_api/dispatch.php",
                             headers: {
-                                Authorization: 'Bearer ' + get_token()
+                                Authorization: 'Bearer ' + token
                             },
                             type: "GET",
                             contentType: "application/json",
-                            data: {
-                                "id_user": user.id_user
-                            },
                             success: function (data) {
-                                og_phobies = data["data"];
-                                for (var i = 0; i < Object.keys(data["data"]).length; i++) {
-                                    $("#" + og_phobies[i]["id_phobia"]).prop('checked', true);
-                                    arr_phobies.push(og_phobies[i]["id_phobia"]);
-                                }
+                                data["data"].forEach(element => {
+                                    $("#checkboxes").html($("#checkboxes").html() + "<label for='" + element['id_phobia'] + "'><input type='checkbox' id=" + element['id_phobia'] + " />" + element['name'] + "</label>");
+                                });
+                                $.ajax({
+                                    url: "https://93.8.28.18:80/sapli-api/user_phobia_api/dispatch.php",
+                                    headers: {
+                                        Authorization: 'Bearer ' + token
+                                    },
+                                    type: "GET",
+                                    contentType: "application/json",
+                                    data: {
+                                        "id_user": user.id_user
+                                    },
+                                    success: function (data) {
+                                        og_phobies = data["data"];
+                                        for (var i = 0; i < Object.keys(data["data"]).length; i++) {
+                                            $("#" + og_phobies[i]["id_phobia"]).prop('checked', true);
+                                            arr_phobies.push(og_phobies[i]["id_phobia"]);
+                                        }
+                                    }
+                                });
                             }
                         });
                     }
@@ -96,53 +109,50 @@ $(document).ready(function () {
             if (arr_phobies.includes($(this).attr('id'))) {
                 removed_phobias.push($(this).attr('id'));
             }
-        });
-        $.ajax({
-            url: "https://93.8.28.18:80/sapli-api/user_phobia_api/dispatch.php",
-            headers: {
-                Authorization: 'Bearer ' + get_token()
-            },
-            type: "DELETE",
-            data: JSON.stringify({
-                id_user: user.id_user,
-                ids_phobias: removed_phobias
-            }),
-            success: function (data) {
-                console.log(data);
-            }
-        });
-        $.ajax({
-            url: "https://93.8.28.18:80/sapli-api/user_phobia_api/dispatch.php",
-            headers: {
-                Authorization: 'Bearer ' + get_token()
-            },
+        }); $.ajax({
+            url: "https://93.8.28.18:80/sapli-auth/dispatch.php",
             type: "POST",
+            contentType: "application/json",
             data: JSON.stringify({
-                id_user: user.id_user,
-                phobias: phobias
+                "login": "test", //FIXME: changer les identifiants
+                "mdp": "test"
             }),
             success: function (data) {
-                console.log(data);
+                token = data["data"];
+                $.ajax({
+                    url: "https://93.8.28.18:80/sapli-api/user_phobia_api/dispatch.php",
+                    headers: {
+                        Authorization: 'Bearer ' + token
+                    },
+                    type: "DELETE",
+                    data: JSON.stringify({
+                        id_user: user.id_user,
+                        ids_phobias: removed_phobias
+                    }),
+                    success: function (data) {
+                        console.log(data);
+                    }
+                });
+                $.ajax({
+                    url: "https://93.8.28.18:80/sapli-api/user_phobia_api/dispatch.php",
+                    headers: {
+                        Authorization: 'Bearer ' + token
+                    },
+                    type: "POST",
+                    data: JSON.stringify({
+                        id_user: user.id_user,
+                        phobias: phobias
+                    }),
+                    success: function (data) {
+                        console.log(data);
+                    }
+                });
             }
         });
+
     }
 
     $("input[type='radio']").click(function () {
         chrome.storage.local.set({ auto: $("input[type='radio']:checked").val() });
     });
-    
-    function get_token() {
-        $.ajax({
-            url: "https://93.8.28.18:80/sapli-auth/dispatch.php",
-            type: "POST",
-            contentType: "application/json",
-            data: JSON.stringify({
-                "username": "test", //FIXME: changer les identifiants
-                "password": "test"
-            }),
-            success: function (data) {
-                return data["data"];
-            }
-        });
-}
 });
