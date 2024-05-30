@@ -9,7 +9,7 @@
     width: 200px;
     height: 125px;
     background-color: rgba(255, 0, 0, 0.5);
-    z-index: 1000;
+    z-index: 100000;
     margin: 20px;
     border-radius: 11px;
     color: black;

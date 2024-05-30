@@ -12,12 +12,13 @@ $(document).ready(async function () {
     var phobia_array = [];
     var player = null;
     var phobias_movie = [];
+    var sapli_div = "";
 
     switch (domain) {
         case "www.netflix.com":
             console.log("Netflix");
-            load_info();
-            function load_info() {
+            load_info_netflix();
+            function load_info_netflix() {
                 console.log("Chargement des informations");
                 player = document.querySelector('video');
                 if (player) {
@@ -37,7 +38,7 @@ $(document).ready(async function () {
                                 if (document.getElementById("skip_button")) {
                                     document.getElementById("skip_button").remove();
                                 }
-                                load_info();
+                                load_info_netflix();
                             }
                         });
                     });
@@ -55,19 +56,59 @@ $(document).ready(async function () {
                     info_loaded(title, episode, duration);
                 } else {
                     sleep(500).then(() => {
-                        load_info();
+                        load_info_netflix();
                     });
                 }
             }
             break;
         case "www.disneyplus.com"://TODO: recuperer le time code
             console.log("Disney+");
-            sleep(10000).then(() => {
-                let title = document.querySelector('.title-field').textContent;
-                let saison_episode = document.querySelector('.subtitle-field').textContent;
-                let timecode = document.querySelector('.time-remaining-label').textContent;
-                console.log(title, saison_episode, timecode);
-            });
+            load_info_disney();
+            function load_info_disney() {
+                console.log("Chargement des informations");
+                if (document.querySelector("disney-web-player")) {
+                    player = document.querySelector("disney-web-player").shadowRoot.querySelector("video");
+                    if (player) {
+                        observer = new MutationObserver((changes) => {
+                            changes.forEach(change => {
+                                if (change.attributeName.includes('src')) {
+                                    console.log('Video source changed');
+                                    movie = null;
+                                    user = null;
+                                    currentTime = null;
+                                    duration = null;
+                                    title = null;
+                                    episode = null;
+                                    player = null;
+                                    phobias_movie = [];
+                                    removeEventListener('timeupdate', myFunction);
+                                    if (document.getElementById("skip_button")) {
+                                        document.getElementById("skip_button").remove();
+                                    }
+                                    load_info_disney();
+                                }
+                            });
+                        });
+                        observer.observe(player, { attributes: true });
+                        if (document.querySelector('.title-field') && document.querySelector('.subtitle-field') && document.querySelector('.time-remaining-label')) {
+                            title = document.querySelector('.title-field').textContent;
+                            episode = document.querySelector('.subtitle-field').textContent;
+                            let time_code = document.querySelector('.time-remaining-label').textContent;
+                            duration = minute_to_seconde(time_code.split(":")[0], time_code.split(":")[1]);
+                        }
+                        currentTime = player.currentTime;
+                        //player.addEventListener('timeupdate', myFunction);
+                    }
+                }
+                if (currentTime != "null" && title && duration != "null" && duration != null) {
+                    player.pause();
+                    info_loaded(title, episode.split(":")[1], duration);
+                } else {
+                    sleep(500).then(() => {
+                        load_info_disney();
+                    });
+                }
+            }
             break;
         case "www.primevideo.com":
             console.log("Amazon Prime Video");
@@ -84,7 +125,12 @@ $(document).ready(async function () {
                 return;
             } else {
                 if (!document.getElementById('sapli-button')) {
-                    $(".default-ltr-cache-m1ta4i").append(sapli_button);
+                    if(domain == "www.netflix.com"){
+                        sapli_div =$(".default-ltr-cache-m1ta4i");
+                    }else if(domain == "www.disneyplus.com"){
+                        sapli_div = $(".controls__right");
+                    }
+                    sapli_div.append(sapli_button);
                     //$("#appMountPoint").append(sapli_button);
                     $("#sapli-button").click(function () {
                         add_warning_overlay();
