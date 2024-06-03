@@ -5,10 +5,10 @@
     height: 20px;
 }
 
-.overlay{
-    width: 200px;
-    height: 125px;
-    background-color: rgba(255, 0, 0, 0.5);
+.overlay_sapli{
+    width: 200px !important;
+    height: 125px !important;
+    background-color: rgba(255, 0, 0, 0.5) !important;
     z-index: 100000;
     margin: 20px;
     border-radius: 11px;
