@@ -4,7 +4,7 @@ $(document).ready(function () {
     console.log(result);
     if (result.uniqueId) {
       $.ajax({
-        url: "https://93.8.28.18:80/sapli-auth/dispatch.php",
+        url: "https://phobia-warning.com/sapli-auth/",
         type: "POST",
         contentType: "application/json",
         data: JSON.stringify({
@@ -14,7 +14,7 @@ $(document).ready(function () {
         success: function (data) {
           token = data["data"];
           $.ajax({
-            url: "https://93.8.28.18:80/sapli-api/user_api/dispatch.php",
+            url: "https://phobia-warning.com/sapli-api/user_api/",
             headers: {
               Authorization: 'Bearer ' + token
             },
@@ -48,7 +48,7 @@ $(document).ready(function () {
     var username = $("#username").val();
     var password = hashPassword($("#password").val());
     $.ajax({
-      url: "https://93.8.28.18:80/sapli-auth/dispatch.php",
+      url: "https://phobia-warning.com/sapli-auth/",
       type: "POST",
       contentType: "application/json",
       data: JSON.stringify({
@@ -58,7 +58,7 @@ $(document).ready(function () {
       success: function (data) {
         token = data["data"];
         $.ajax({
-          url: "https://93.8.28.18:80/sapli-api/user_api/dispatch.php",
+          url: "https://phobia-warning.com/sapli-api/user_api/",
           headers: {
             Authorization: 'Bearer ' + token
           },
@@ -71,7 +71,7 @@ $(document).ready(function () {
           success: function (data) {
             console.log(data);
             $.ajax({
-              url: "https://93.8.28.18:80/sapli-api/user_api/dispatch.php",
+              url: "https://phobia-warning.com/sapli-api/user_api/",
               headers: {
                 Authorization: 'Bearer ' + token
               },
@@ -96,7 +96,7 @@ $(document).ready(function () {
     var username = $("#username_login").val();
     var password = hashPassword($("#password_login").val());
     $.ajax({
-      url: "https://93.8.28.18:80/sapli-auth/dispatch.php",
+      url: "https://phobia-warning.com/sapli-auth/",
       type: "POST",
       contentType: "application/json",
       data: JSON.stringify({
@@ -106,7 +106,7 @@ $(document).ready(function () {
       success: function (data) {
         token = data["data"];
         $.ajax({
-          url: "https://93.8.28.18:80/sapli-api/user_api/dispatch.php",
+          url: "https://phobia-warning.com/sapli-api/user_api/",
           headers: {
             Authorization: 'Bearer ' + token
           },

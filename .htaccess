@@ -1,0 +1,8 @@
+RewriteEngine On
+
+RewriteRule ^sapli-auth SAPLI/sapli-auth/dispatch.php
+RewriteRule ^sapli-api/user_api SAPLI/sapli-api/user_api/dispatch.php
+RewriteRule ^sapli-api/movie_phobia_api SAPLI/sapli-api/movie_phobia_api/dispatch.php
+RewriteRule ^sapli-api/phobia_api SAPLI/sapli-api/phobia_api/dispatch.php
+RewriteRule ^sapli-api/movie_api SAPLI/sapli-api/movie_api/dispatch.php
+RewriteRule ^sapli-api/user_phobia_api SAPLI/sapli-api/user_phobia_api/dispatch.php

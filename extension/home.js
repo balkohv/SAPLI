@@ -17,7 +17,7 @@ $(document).ready(function () {
     chrome.storage.local.get('uniqueId', (result) => {
         browser_id = result.uniqueId;
         $.ajax({
-            url: "https://93.8.28.18:80/sapli-auth/dispatch.php",
+            url: "https://phobia-warning.com/sapli-auth/",
             type: "POST",
             contentType: "application/json",
             data: JSON.stringify({
@@ -27,7 +27,7 @@ $(document).ready(function () {
             success: function (data) {
                 token = data["data"];
                 $.ajax({
-                    url: "https://93.8.28.18:80/sapli-api/user_api/dispatch.php",
+                    url: "https://phobia-warning.com/sapli-api/user_api/",
                     headers: {
                         Authorization: 'Bearer ' + token
                     },
@@ -39,7 +39,7 @@ $(document).ready(function () {
                     success: function (data) {
                         user = data["data"];
                         $.ajax({
-                            url: "https://93.8.28.18:80/sapli-api/phobia_api/dispatch.php",
+                            url: "https://phobia-warning.com/sapli-api/phobia_api/",
                             headers: {
                                 Authorization: 'Bearer ' + token
                             },
@@ -50,7 +50,7 @@ $(document).ready(function () {
                                     $("#checkboxes").html($("#checkboxes").html() + "<label for='" + element['id_phobia'] + "'><input type='checkbox' id=" + element['id_phobia'] + " />" + element['name'] + "</label>");
                                 });
                                 $.ajax({
-                                    url: "https://93.8.28.18:80/sapli-api/user_phobia_api/dispatch.php",
+                                    url: "https://phobia-warning.com/sapli-api/user_phobia_api/",
                                     headers: {
                                         Authorization: 'Bearer ' + token
                                     },
@@ -110,7 +110,7 @@ $(document).ready(function () {
                 removed_phobias.push($(this).attr('id'));
             }
         }); $.ajax({
-            url: "https://93.8.28.18:80/sapli-auth/dispatch.php",
+            url: "https://phobia-warning.com/sapli-auth/",
             type: "POST",
             contentType: "application/json",
             data: JSON.stringify({
@@ -120,7 +120,7 @@ $(document).ready(function () {
             success: function (data) {
                 token = data["data"];
                 $.ajax({
-                    url: "https://93.8.28.18:80/sapli-api/user_phobia_api/dispatch.php",
+                    url: "https://phobia-warning.com/sapli-api/user_phobia_api/",
                     headers: {
                         Authorization: 'Bearer ' + token
                     },
@@ -134,7 +134,7 @@ $(document).ready(function () {
                     }
                 });
                 $.ajax({
-                    url: "https://93.8.28.18:80/sapli-api/user_phobia_api/dispatch.php",
+                    url: "https://phobia-warning.com/sapli-api/user_phobia_api/",
                     headers: {
                         Authorization: 'Bearer ' + token
                     },

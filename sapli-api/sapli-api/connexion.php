@@ -10,7 +10,7 @@
         deliver_response(401, "Token needed", null);
         exit();
     }
-    $url = "http://192.168.1.59/SAPLI/sapli-auth/dispatch.php";
+    $url = "http://192.168.1.59/SAPLI/sapli-auth/";
     $ch = curl_init();
     curl_setopt($ch, CURLOPT_URL, $url);
     curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');

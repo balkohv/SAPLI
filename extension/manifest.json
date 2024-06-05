@@ -31,7 +31,7 @@
     },
     "content_scripts": [
         {
-        "matches": ["https://*.disneyplus.com/*","https://*.netflix.com/*"],
+        "matches": ["https://*.disneyplus.com/*","https://*.netflix.com/*", "https://*.primevideo.com/*"],
         "js": ["jquery-3.7.1.min.js","content-script.js"],
         "css": ["modal.css"],
         "run_at": "document_idle"
