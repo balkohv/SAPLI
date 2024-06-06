@@ -2,7 +2,7 @@
 const domain = window.location.hostname;
 chrome.runtime.sendMessage({ type: "updateBadge", text: "on", color: "#4578c9" });
 console.log("Domain of the site:", domain);
-$(document).ready(async function () {
+$(document).ready(function () {
     var movie = null;
     var user = null;
     var currentTime = null;
@@ -54,7 +54,7 @@ $(document).ready(async function () {
                     });
                     observer.observe(player, { attributes: true });
                     title = document.querySelector('.default-ltr-cache-m1ta4i');
-                    if (title != null) {
+                    if (title != null && title.querySelector('h4')!=null) {
                         episode = title.querySelector('span').textContent;
                         title = title.querySelector('h4').textContent;
                     }
@@ -378,11 +378,11 @@ $(document).ready(async function () {
         }
         if (phobias_movie.length > 0) {
             for (var i = 0; i < phobias_movie.length; i++) {
+                console.log(phobias_movie[i].time_code,player.currentTime );
                 if (player.currentTime >= minute_to_seconde(phobias_movie[i].time_code.split(":")[0], phobias_movie[i].time_code.split(":")[1]) - 10 && player.currentTime <= minute_to_seconde(phobias_movie[i].time_code_end.split(":")[0], phobias_movie[i].time_code_end.split(":")[1])) {
-                    console.log("phobie");
                     add_skip_overlay(minute_to_seconde(phobias_movie[i].time_code.split(":")[0], phobias_movie[i].time_code.split(":")[1]), minute_to_seconde(phobias_movie[i].time_code_end.split(":")[0], phobias_movie[i].time_code_end.split(":")[1]));
                 } else {
-                    if (document.getElementById("skip_button")) {
+                    if (document.getElementsByClassName(minute_to_seconde(phobias_movie[i].time_code.split(":")[0], phobias_movie[i].time_code.split(":")[1]))[0]!=null) {
                         document.getElementById("skip_button").remove();
                     }
                 }
@@ -492,6 +492,7 @@ $(document).ready(async function () {
         console.log(skip_container);
         var skip_button = document.createElement("button");
         skip_button.id = "skip_button";
+        skip_button.className = time_start;
         skip_button.textContent = "Passer la scène";
         skip_container.appendChild(skip_button);
         console.log(skip_button);
