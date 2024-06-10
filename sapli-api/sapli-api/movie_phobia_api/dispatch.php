@@ -11,17 +11,20 @@
             $id_phobia = $data['id_phobia'];
             $time_code = $data['time_code'];
             $time_end = $data['time_end'];
+            $id_user = $data['id_user'];
             $upvote = isset($data['up_vote'])? $data['up_vote']:0;
             $downvote = isset($data['down_vote'])? $data['down_vote']:0;
-            $response=add_movie_phobia($id_movie, $id_phobia, $time_code,$time_end, $upvote, $downvote);
+            $response=add_movie_phobia($id_user,$id_movie, $id_phobia, $time_code,$time_end, $upvote, $downvote);
             deliver_response($response["code"], $response["message"], $response["data"]);
             break;
         case 'GET':
             $data = json_decode(file_get_contents('php://input'), true);
-            if(isset($data['id_movie']) and isset($data['id_phobia'])){
-                $id_movie = $data['id_movie'];
-                $id_phobia = $data['id_phobia'];
+            if(isset($_GET['id_movie']) and isset($_GET['id_phobia']) and !isset($_GET['type'])){
+                $id_movie = $_GET['id_movie'];
+                $id_phobia = $_GET['id_phobia'];
                 $response = get_movie_phobia($id_movie, $id_phobia);
+            }elseif(isset($_GET['type'])){
+                $response = vote($_GET['id_movie'], $_GET['id_phobia'], $_GET['id_user'],$_GET["time_code"], $_GET['type']);
             }else{
                 $response = get_all_movie_phobia();
             }

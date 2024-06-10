@@ -6,7 +6,7 @@
 }
 
 .overlay_sapli{
-    width: 200px !important;
+    width: 235px !important;
     height: 125px !important;
     background-color: rgba(255, 0, 0, 0.5) !important;
     z-index: 100000;
@@ -47,7 +47,7 @@
 .time_input{
     font-size: 12px;
     margin: 0 4px;
-    width: 65px;
+    width: 81px;
     height: 29px;
     border-radius: 8px;
     border: none;
@@ -89,10 +89,55 @@ svg{
     border: none;
     cursor: pointer;
     bottom: 10em;
-    right: 50px;
+    right: 88px;
 }
 
 #skip_button:hover{
+    background: #ffffff44;
+    color: white;
+}
+
+#thumb_up_div{
+    z-index: 100;
+    position: absolute;
+    height: 35px;
+    width: 35px;
+    color: #ffffffb8;
+    font-size: 16px;
+    cursor: pointer;
+    bottom: 10em;
+    right: 49px;
+    background: #f0f8ff33;
+    border-width: initial;
+    border-style: none;
+    border-color: initial;
+    border-image: initial;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#thumb_down_div{
+    z-index: 100;
+    position: absolute;
+    height: 35px;
+    width: 35px;
+    color: #ffffffb8;
+    font-size: 16px;
+    cursor: pointer;
+    bottom: 10em;
+    right: 11px;
+    background: #f0f8ff33;
+    border-width: initial;
+    border-style: none;
+    border-color: initial;
+    border-image: initial;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#thumb_up_div:hover , #thumb_down_div:hover{
     background: #ffffff44;
     color: white;
 }

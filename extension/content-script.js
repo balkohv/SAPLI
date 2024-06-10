@@ -45,6 +45,8 @@ $(document).ready(function () {
                                 removeEventListener('timeupdate', myFunction);
                                 if (document.getElementById("skip_button")) {
                                     document.getElementById("skip_button").remove();
+                                    document.getElementById("thumb_up_div").remove();
+                                    document.getElementById("thumb_down_div").remove();
                                 }
                                 if (!load_in_progress) {
                                     load_info_netflix();
@@ -54,7 +56,7 @@ $(document).ready(function () {
                     });
                     observer.observe(player, { attributes: true });
                     title = document.querySelector('.default-ltr-cache-m1ta4i');
-                    if (title != null && title.querySelector('h4')!=null) {
+                    if (title != null && title.querySelector('h4') != null) {
                         episode = title.querySelector('span').textContent;
                         title = title.querySelector('h4').textContent;
                     }
@@ -62,7 +64,7 @@ $(document).ready(function () {
                     duration = player.duration;
                     player.addEventListener('timeupdate', myFunction);
                 }
-                if (currentTime != "null" && title && duration != "null") {
+                if (currentTime != "null" && title && duration != "null" && title != null) {
                     info_loaded(title, episode, duration);
                 } else {
                     sleep(500).then(() => {
@@ -96,6 +98,8 @@ $(document).ready(function () {
                                     removeEventListener('timeupdate', myFunction);
                                     if (document.getElementById("skip_button")) {
                                         document.getElementById("skip_button").remove();
+                                        document.getElementById("thumb_up_div").remove();
+                                        document.getElementById("thumb_down_div").remove();
                                     }
                                     if (!load_in_progress) {
                                         load_info_disney();
@@ -147,6 +151,8 @@ $(document).ready(function () {
                                 removeEventListener('timeupdate', myFunction);
                                 if (document.getElementById("skip_button")) {
                                     document.getElementById("skip_button").remove();
+                                    document.getElementById("thumb_up_div").remove();
+                                    document.getElementById("thumb_down_div").remove();
                                 }
                                 if (!load_in_progress) {
                                     load_info_prime();
@@ -378,12 +384,14 @@ $(document).ready(function () {
         }
         if (phobias_movie.length > 0) {
             for (var i = 0; i < phobias_movie.length; i++) {
-                console.log(phobias_movie[i].time_code,player.currentTime );
-                if (player.currentTime >= minute_to_seconde(phobias_movie[i].time_code.split(":")[0], phobias_movie[i].time_code.split(":")[1]) - 10 && player.currentTime <= minute_to_seconde(phobias_movie[i].time_code_end.split(":")[0], phobias_movie[i].time_code_end.split(":")[1])) {
-                    add_skip_overlay(minute_to_seconde(phobias_movie[i].time_code.split(":")[0], phobias_movie[i].time_code.split(":")[1]), minute_to_seconde(phobias_movie[i].time_code_end.split(":")[0], phobias_movie[i].time_code_end.split(":")[1]));
+                if (player.currentTime >= hour_to_seconde(phobias_movie[i].time_code.split(":")[0], phobias_movie[i].time_code.split(":")[1], phobias_movie[i].time_code.split(":")[2]) - 10 && player.currentTime <= hour_to_seconde(phobias_movie[i].time_code_end.split(":")[0], phobias_movie[i].time_code_end.split(":")[1], phobias_movie[i].time_code_end.split(":")[2])) {
+                    console.log(phobias_movie[i].id_phobia);
+                    add_skip_overlay(hour_to_seconde(phobias_movie[i].time_code.split(":")[0], phobias_movie[i].time_code.split(":")[1], phobias_movie[i].time_code.split(":")[2]), hour_to_seconde(phobias_movie[i].time_code_end.split(":")[0], phobias_movie[i].time_code_end.split(":")[1], phobias_movie[i].time_code_end.split(":")[2]), phobias_movie[i].id_phobia);
                 } else {
-                    if (document.getElementsByClassName(minute_to_seconde(phobias_movie[i].time_code.split(":")[0], phobias_movie[i].time_code.split(":")[1]))[0]!=null) {
+                    if (document.getElementsByClassName(hour_to_seconde(phobias_movie[i].time_code.split(":")[0], phobias_movie[i].time_code.split(":")[1], phobias_movie[i].time_code.split(":")[2]))[0] != null) {
                         document.getElementById("skip_button").remove();
+                        document.getElementById("thumb_up_div").remove();
+                        document.getElementById("thumb_down_div").remove();
                     }
                 }
             }
@@ -414,17 +422,19 @@ $(document).ready(function () {
         var input_container = document.createElement('div');
         input_container.id = "input_container";
         var input_start = document.createElement('input');
+        input_start.step = "1";
         input_start.type = "time";
         input_start.className = "time_input";
         input_start.id = "start_time";
         input_start.min = "00:00";
-        input_start.max = seconde_to_minute(duration)[0] + ":" + seconde_to_minute(duration)[1];
+        input_start.max = seconde_to_hour(player.currentTime)[0] + ":" + seconde_to_hour(player.currentTime)[1] + ":" + seconde_to_hour(player.currentTime)[2];
         var input_end = document.createElement('input');
+        input_end.step = "1";
         input_end.type = "time";
         input_end.className = "time_input";
         input_end.id = "end_time";
         input_end.min = "00:00";
-        input_end.max = seconde_to_minute(duration)[0] + ":" + seconde_to_minute(duration)[1];
+        input_end.max = seconde_to_hour(player.currentTime)[0] + ":" + seconde_to_hour(player.currentTime)[1] + ":" + seconde_to_hour(player.currentTime)[2];
         input_end.id = "end_time";
         overlay.className = "overlay_sapli control-icon-btn";
         overlay.id = "overlay_sapli";
@@ -447,17 +457,17 @@ $(document).ready(function () {
         $("#input_container").append(record2);
         overlay.appendChild(submit);
 
-        $("#start_time").val(seconde_to_minute(player.currentTime)[0] + ":" + seconde_to_minute(player.currentTime)[1]);
-        $("#end_time").val(seconde_to_minute(player.currentTime)[0] + ":" + seconde_to_minute(player.currentTime)[1]);
+        $("#start_time").val(seconde_to_hour(player.currentTime)[0] + ":" + seconde_to_hour(player.currentTime)[1] + ":" + seconde_to_hour(player.currentTime)[2]);
+        $("#end_time").val(seconde_to_hour(player.currentTime)[0] + ":" + seconde_to_hour(player.currentTime)[1] + ":" + seconde_to_hour(player.currentTime)[2]);
         $("#time_start").change(function () {
             $("#time_end").attr("min", $("#time_start").val());
         });
         $("#pin1").click(function () {
-            console.log(seconde_to_minute(player.currentTime)[0]);
-            $("#start_time").val(seconde_to_minute(player.currentTime)[0] + ":" + seconde_to_minute(player.currentTime)[1]);
+            console.log(seconde_to_hour(player.currentTime)[0]);
+            $("#start_time").val(seconde_to_hour(player.currentTime)[0] + ":" + seconde_to_hour(player.currentTime)[1] + ":" + seconde_to_hour(player.currentTime)[2]);
         });
         $("#pin2").click(function () {
-            $("#end_time").val(seconde_to_minute(player.currentTime)[0] + ":" + seconde_to_minute(player.currentTime)[1]);
+            $("#end_time").val(seconde_to_hour(player.currentTime)[0] + ":" + seconde_to_hour(player.currentTime)[1] + ":" + seconde_to_hour(player.currentTime)[2]);
         });
 
         $("#submit").click(function () {
@@ -465,10 +475,12 @@ $(document).ready(function () {
         });
     }
 
-    function add_skip_overlay(time_start, time_end) {
+    function add_skip_overlay(time_start, time_end, id_phobia) {
         if (document.getElementById("skip_button")) {
             return;
         }
+        var thumb_up = '<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed"><path d="M720-120H280v-520l280-280 50 50q7 7 11.5 19t4.5 23v14l-44 174h258q32 0 56 24t24 56v80q0 7-2 15t-4 15L794-168q-9 20-30 34t-44 14Zm-360-80h360l120-280v-80H480l54-220-174 174v406Zm0-406v406-406Zm-80-34v80H160v360h120v80H80v-520h200Z"/></svg>';
+        var thumb_down ='<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed"><path d="M240-840h440v520L400-40l-50-50q-7-7-11.5-19t-4.5-23v-14l44-174H120q-32 0-56-24t-24-56v-80q0-7 2-15t4-15l120-282q9-20 30-34t44-14Zm360 80H240L120-480v80h360l-54 220 174-174v-406Zm0 406v-406 406Zm80 34v-80h120v-360H680v-80h200v520H680Z"/></svg>';
         chrome.storage.local.get('auto', (result) => {
             if (result.auto != null) {
                 console.log(result.auto);
@@ -490,33 +502,92 @@ $(document).ready(function () {
                 break;
         }
         console.log(skip_container);
+        var thumb_up_div= document.createElement("div");
+        thumb_up_div.id = "thumb_up_div";
+        thumb_up_div.className = time_start;
+        thumb_up_div.innerHTML = thumb_up;
+        var thumb_down_div = document.createElement("div");
+        thumb_down_div.id = "thumb_down_div";
+        thumb_down_div.className = time_start;
+        thumb_down_div.innerHTML = thumb_down;
         var skip_button = document.createElement("button");
         skip_button.id = "skip_button";
         skip_button.className = time_start;
         skip_button.textContent = "Passer la scène";
         skip_container.appendChild(skip_button);
+        skip_container.appendChild(thumb_up_div);
+        skip_container.appendChild(thumb_down_div);
         console.log(skip_button);
         $("#skip_button").click(function () {
             skip_scene(time_start, time_end);
-            skip_button.style.display = "none";
+            document.getElementById("skip_button").remove();
+            document.getElementById("thumb_up_div").remove();
+            document.getElementById("thumb_down_div").remove();
+        });
+        $("#thumb_up_div").click(function () {
+            vote(id_phobia, time_start, "up");
+        });
+        $("#thumb_down_div").click(function () {
+            vote(id_phobia, time_start, "down");
+        });
+
+    }
+    function vote (id_phobia, time_start, type) {
+        $.ajax({
+            url: "https://phobia-warning.com/sapli-auth/",
+            type: "POST",
+            contentType: "application/json",
+            data: JSON.stringify({
+                "login": "test", //FIXME: changer les identifiants
+                "mdp": "test"
+            }),
+            success: function (data) {
+                token = data["data"];
+                $.ajax({
+                    url: "https://phobia-warning.com/sapli-api/movie_phobia_api",
+                    headers: {
+                        Authorization: 'Bearer ' + token
+                    },
+                    type: "GET",
+                    data: {
+                        id_movie: movie.id_movie,
+                        id_phobia: id_phobia,
+                        time_code: seconde_to_hour(time_start)[0] + ":" + seconde_to_hour(time_start)[1] + ":" + seconde_to_hour(time_start)[2],
+                        id_user: user.id_user,
+                        type: type
+                    },
+                    contentType: "application/json",
+                    success: function (data) {
+                        document.getElementById("thumb_up_div").remove();
+                        document.getElementById("thumb_down_div").remove();
+                    }
+                });
+            }
         });
     }
-
-    function seconde_to_minute(seconde) {
-        var time = seconde / 60;
-        var minutes = Math.floor(time);
-        var seconds = Math.floor((time - minutes) * 60);
-        if (seconds < 10) {
-            seconds = "0" + seconds;
-        }
-        if (minutes < 10) {
-            minutes = "0" + minutes;
-        }
-        return [minutes, seconds];
+    
+    function minute_to_seconde(minute, seconde) {
+        return parseInt(minute) * 60 + parseInt(seconde);
     }
 
-    function minute_to_seconde(minutes, seconds) {
-        return parseInt(minutes) * 60 + parseInt(seconds);
+    function seconde_to_hour(seconde) {
+        var hour = Math.floor(seconde / 3600);
+        var minute = Math.floor((seconde - hour * 3600) / 60);
+        var second = Math.round(seconde - hour * 3600 - minute * 60);
+        if (hour < 10) {
+            hour = "0" + hour;
+        }
+        if (minute < 10) {
+            minute = "0" + minute;
+        }
+        if (second < 10) {
+            second = "0" + second;
+        }
+        return [hour, minute, second];
+    }
+
+    function hour_to_seconde(hour, minute, second) {
+        return parseInt(hour) * 3600 + parseInt(minute) * 60 + parseInt(second);
     }
 
     function submit_warning() {
@@ -537,7 +608,7 @@ $(document).ready(function () {
             alert("Veuillez remplir les champs");
             return;
         }
-        if (start_time >= seconde_to_minute(duration)[0] + ":" + seconde_to_minute(duration)[1] || end_time >= seconde_to_minute(duration)[0] + ":" + seconde_to_minute(duration)[1]) {
+        if (start_time >= seconde_to_hour(duration)[0] + ":" + seconde_to_hour(duration)[1] + ":" + seconde_to_hour(duration)[2] || end_time >= seconde_to_hour(duration)[0] + ":" + seconde_to_hour(duration)[1] + ":" + seconde_to_hour(duration)[2]) {
             alert("Veuillez entrer une heure valide");
             return;
         }
@@ -559,6 +630,7 @@ $(document).ready(function () {
                     type: "POST",
                     contentType: "application/json",
                     data: JSON.stringify({
+                        "id_user": user.id_user,
                         "id_movie": id_movie,
                         "id_phobia": id_phobia,
                         "time_code": start_time,
@@ -567,6 +639,12 @@ $(document).ready(function () {
                     success: function (data) {
                         if (document.getElementById("skip_button")) {
                             document.getElementById("skip_button").remove();
+                            document.getElementById("thumb_up_div").remove();
+                            document.getElementById("thumb_down_div").remove();
+                        }
+                        if (document.getElementById("overlay_sapli")) {
+                            document.getElementById("overlay_sapli").remove();
+                            document.getElementById("sapli-container").style.marginTop = "0px";
                         }
                     }
                 });
@@ -577,12 +655,12 @@ $(document).ready(function () {
     function skip_scene(time_start, time_end) {
         switch (domain) {
             case "www.netflix.com":
-                const script = document.createElement('script');
-                script.src = chrome.runtime.getURL('injectedScript.js');
+                const script = document.createElement('script');   
+                script.src = chrome.runtime.getURL('injectedScript.js');   
                 script.setAttribute('data-seek-time', time_end * 1000);
-                (document.head || document.documentElement).appendChild(script);
-                script.onload = function () {
-                    script.remove();
+                (document.head || document.documentElement).appendChild(script);   
+                script.onload = function () {  
+                    script.remove();   
                     script.src = null;
                 };
                 window.addEventListener('message', (event) => {

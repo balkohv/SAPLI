@@ -101,14 +101,11 @@ $(document).ready(function () {
         var phobias = [];
         var removed_phobias = [];
         $('#checkboxes input:checked').each(function () {
-            if (!arr_phobies.includes($(this).attr('id'))) {
-                phobias.push($(this).attr('id'));
-            }
+            phobias.push($(this).attr('id'));
         });
         $('#checkboxes input:not(:checked)').each(function () {
-            if (arr_phobies.includes($(this).attr('id'))) {
-                removed_phobias.push($(this).attr('id'));
-            }
+            removed_phobias.push($(this).attr('id'));
+            console.log(phobias,removed_phobias);
         }); $.ajax({
             url: "https://phobia-warning.com/sapli-auth/",
             type: "POST",
@@ -131,6 +128,7 @@ $(document).ready(function () {
                     }),
                     success: function (data) {
                         console.log(data);
+                        removed_phobias = [];
                     }
                 });
                 $.ajax({
@@ -145,6 +143,7 @@ $(document).ready(function () {
                     }),
                     success: function (data) {
                         console.log(data);
+                        phobias = [];
                     }
                 });
             }
