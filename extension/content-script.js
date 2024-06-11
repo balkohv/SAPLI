@@ -476,11 +476,12 @@ $(document).ready(function () {
     }
 
     function add_skip_overlay(time_start, time_end, id_phobia) {
+        console.log('overlay');
         if (document.getElementById("skip_button")) {
             return;
         }
         var thumb_up = '<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed"><path d="M720-120H280v-520l280-280 50 50q7 7 11.5 19t4.5 23v14l-44 174h258q32 0 56 24t24 56v80q0 7-2 15t-4 15L794-168q-9 20-30 34t-44 14Zm-360-80h360l120-280v-80H480l54-220-174 174v406Zm0-406v406-406Zm-80-34v80H160v360h120v80H80v-520h200Z"/></svg>';
-        var thumb_down ='<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed"><path d="M240-840h440v520L400-40l-50-50q-7-7-11.5-19t-4.5-23v-14l44-174H120q-32 0-56-24t-24-56v-80q0-7 2-15t4-15l120-282q9-20 30-34t44-14Zm360 80H240L120-480v80h360l-54 220 174-174v-406Zm0 406v-406 406Zm80 34v-80h120v-360H680v-80h200v520H680Z"/></svg>';
+        var thumb_down = '<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed"><path d="M240-840h440v520L400-40l-50-50q-7-7-11.5-19t-4.5-23v-14l44-174H120q-32 0-56-24t-24-56v-80q0-7 2-15t4-15l120-282q9-20 30-34t44-14Zm360 80H240L120-480v80h360l-54 220 174-174v-406Zm0 406v-406 406Zm80 34v-80h120v-360H680v-80h200v520H680Z"/></svg>';
         chrome.storage.local.get('auto', (result) => {
             if (result.auto != null) {
                 console.log(result.auto);
@@ -502,7 +503,7 @@ $(document).ready(function () {
                 break;
         }
         console.log(skip_container);
-        var thumb_up_div= document.createElement("div");
+        var thumb_up_div = document.createElement("div");
         thumb_up_div.id = "thumb_up_div";
         thumb_up_div.className = time_start;
         thumb_up_div.innerHTML = thumb_up;
@@ -526,13 +527,67 @@ $(document).ready(function () {
         });
         $("#thumb_up_div").click(function () {
             vote(id_phobia, time_start, "up");
+            if($("#thumb_up_div").hasClass("thumb_up_selected")){
+                $("#thumb_up_div").removeClass("thumb_up_selected");
+            }else{
+                $("#thumb_up_div").addClass("thumb_up_selected");
+                $("#thumb_down_div").removeClass("thumb_down_selected");
+
+            }
         });
         $("#thumb_down_div").click(function () {
             vote(id_phobia, time_start, "down");
+            if($("#thumb_down_div").hasClass("thumb_down_selected")){
+                $("#thumb_down_div").removeClass("thumb_down_selected");
+            }else{
+                $("#thumb_down_div").addClass("thumb_down_selected");
+                $("#thumb_up_div").removeClass("thumb_up_selected");
+            }
+        });
+        vote_scene(id_phobia, time_start);
+
+    }
+
+    function vote_scene(id_phobia, time_start) {
+        var vote = null;
+        $.ajax({
+            url: "https://phobia-warning.com/sapli-auth/",
+            type: "POST",
+            contentType: "application/json",
+            data: JSON.stringify({
+                "login": "test", //FIXME: changer les identifiants
+                "mdp": "test"
+            }),
+            success: function (data) {
+                token = data["data"];
+                $.ajax({
+                    url: "https://phobia-warning.com/sapli-api/user_api/",
+                    headers: {
+                        Authorization: 'Bearer ' + token
+                    },
+                    type: "GET",
+                    data: {
+                        id_phobia: id_phobia,
+                        id_user: user.id_user,
+                        id_movie: movie.id_movie,
+                        time_start: seconde_to_hour(time_start)[0] + ":" + seconde_to_hour(time_start)[1] + ":" + seconde_to_hour(time_start)[2]
+                    },
+                    contentType: "application/json",
+                    success: function (data) {
+                        console.log("vote");
+                        vote= data["data"].vote;
+                        if (vote == "up") {
+                            $("#thumb_up_div").addClass("thumb_up_selected");
+                        } else if (vote == "down") {
+                            $("#thumb_down_div").addClass("thumb_down_selected");
+                        }
+                    }
+                });
+            }
         });
 
     }
-    function vote (id_phobia, time_start, type) {
+    function vote(id_phobia, time_start, type) {
         $.ajax({
             url: "https://phobia-warning.com/sapli-auth/",
             type: "POST",
@@ -565,7 +620,7 @@ $(document).ready(function () {
             }
         });
     }
-    
+
     function minute_to_seconde(minute, seconde) {
         return parseInt(minute) * 60 + parseInt(seconde);
     }
@@ -655,12 +710,12 @@ $(document).ready(function () {
     function skip_scene(time_start, time_end) {
         switch (domain) {
             case "www.netflix.com":
-                const script = document.createElement('script');   
-                script.src = chrome.runtime.getURL('injectedScript.js');   
+                const script = document.createElement('script');
+                script.src = chrome.runtime.getURL('injectedScript.js');
                 script.setAttribute('data-seek-time', time_end * 1000);
-                (document.head || document.documentElement).appendChild(script);   
-                script.onload = function () {  
-                    script.remove();   
+                (document.head || document.documentElement).appendChild(script);
+                script.onload = function () {
+                    script.remove();
                     script.src = null;
                 };
                 window.addEventListener('message', (event) => {

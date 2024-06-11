@@ -192,6 +192,22 @@ function vote($id_movie, $id_phobia, $id_user, $time_code, $type)
         } else {
             $message = 'erreur serveur';
         }
+        $type_inverse = $type == "up" ? "down" : "up";
+        $upd_vote = $db->prepare('UPDATE movie_phobia SET ' . $type_inverse . '_vote = ' . $type_inverse . '_vote - 1 WHERE id_movie = :id_movie and id_phobia = :id_phobia and time_code = :time_code');
+        $upd_vote->execute(
+            array(
+                'id_movie' => $id_movie,
+                'id_phobia' => $id_phobia,
+                'time_code' => $time_code
+            )
+        );
+        if ($upd_vote) {
+            $code = 200;
+            $message = 'downvote';
+        } else {
+            $code = 500;
+            $message = 'erreur serveur';
+        }
         $flag = true;
     } else {
         $req3 = $db->prepare('INSERT INTO vote (id_user, id_movie, id_phobia, time_start, vote) VALUES(:id_user, :id_movie, :id_phobia, :time_code, :type)');

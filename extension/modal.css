@@ -117,6 +117,26 @@ svg{
     justify-content: center;
 }
 
+.thumb_up_selected, .thumb_up_selected>svg>path{
+    background: #31a7fb54 !important;
+    fill: #278ed1 !important;
+}
+
+.thumb_up_selected:hover, .thumb_up_selected:hover>svg>path{ 
+    background: rgb(0 167 247 / 55%) !important;
+    fill: rgb(0 178 255) !important;
+}
+
+.thumb_down_selected, .thumb_down_selected>svg>path{
+    background: #ff242438 !important;
+    fill: #d1131f !important;
+}
+
+.thumb_down_selected:hover, .thumb_down_selected:hover>svg>path{
+    background: rgb(255 36 36 / 55%) !important;
+    fill: rgb(209 19 31) !important;
+}
+
 #thumb_down_div{
     z-index: 100;
     position: absolute;

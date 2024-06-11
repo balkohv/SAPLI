@@ -28,6 +28,8 @@
                 $response = get_user($username);
             }elseif(isset($_GET['browser_id'])){
                 $response=get_user_by_browser_id($_GET['browser_id']);
+            }elseif(isset($_GET['id_movie'])){
+                $response = get_vote_movie_phobia($_GET['id_movie'], $_GET['id_phobia'], $_GET['id_user'], $_GET['time_start']);
             }else{
                 $response = get_all_user();
             }

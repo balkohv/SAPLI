@@ -173,4 +173,26 @@
         return $randomString;
     }
 
+    function get_vote_movie_phobia($id_movie, $id_phobia, $id_user, $time_code){
+        global $db;
+        $code=500;
+        $message = 'erreur serveur';
+        $req1 = $db->prepare('SELECT * FROM vote WHERE id_movie = :id_movie and id_phobia = :id_phobia and id_user = :id_user and time_start = :time_code');
+        $req1->execute(array(
+            'id_movie' => $id_movie,
+            'id_phobia' => $id_phobia,
+            'id_user' => $id_user,
+            'time_code' => $time_code,
+        ));
+        $vote = $req1->fetch();
+        if(isset($vote['id_movie'])){
+            $code=200;
+            $message = 'vote trouve';
+        }else{
+            $code=404;
+            $message = 'vote non trouve';
+        }
+        return array("code"=>$code, "message"=>$message, "data"=>$vote);
+    }
+
 ?>
