@@ -81,7 +81,7 @@ $(document).ready(function () {
                 load_in_progress = true;
                 console.log("Chargement des informations");
                 if (document.querySelector("disney-web-player")) {
-                    player = document.querySelector("disney-web-player").shadowRoot.querySelector("video");
+                    player = document.querySelector("video");
                     if (player) {
                         observer = new MutationObserver((changes) => {
                             changes.forEach(change => {
@@ -199,7 +199,6 @@ $(document).ready(function () {
                         $(".controls__right").prepend(disney_btn);
                     }
                     $("#sapli-button").click(function () {
-                        console.log("click");
                         add_warning_overlay();
                     });
                 }
@@ -384,14 +383,15 @@ $(document).ready(function () {
         }
         if (phobias_movie.length > 0) {
             for (var i = 0; i < phobias_movie.length; i++) {
-                if (player.currentTime >= hour_to_seconde(phobias_movie[i].time_code.split(":")[0], phobias_movie[i].time_code.split(":")[1], phobias_movie[i].time_code.split(":")[2]) - 10 && player.currentTime <= hour_to_seconde(phobias_movie[i].time_code_end.split(":")[0], phobias_movie[i].time_code_end.split(":")[1], phobias_movie[i].time_code_end.split(":")[2])) {
-                    console.log(phobias_movie[i].id_phobia);
-                    add_skip_overlay(hour_to_seconde(phobias_movie[i].time_code.split(":")[0], phobias_movie[i].time_code.split(":")[1], phobias_movie[i].time_code.split(":")[2]), hour_to_seconde(phobias_movie[i].time_code_end.split(":")[0], phobias_movie[i].time_code_end.split(":")[1], phobias_movie[i].time_code_end.split(":")[2]), phobias_movie[i].id_phobia);
-                } else {
-                    if (document.getElementsByClassName(hour_to_seconde(phobias_movie[i].time_code.split(":")[0], phobias_movie[i].time_code.split(":")[1], phobias_movie[i].time_code.split(":")[2]))[0] != null) {
-                        document.getElementById("skip_button").remove();
-                        document.getElementById("thumb_up_div").remove();
-                        document.getElementById("thumb_down_div").remove();
+                if ((phobia_array[i].up_vote - phobia_array[i].down_vote) > -5 || 1==1 ) {
+                    if (player.currentTime >= hour_to_seconde(phobias_movie[i].time_code.split(":")[0], phobias_movie[i].time_code.split(":")[1], phobias_movie[i].time_code.split(":")[2]) - 10 && player.currentTime <= hour_to_seconde(phobias_movie[i].time_code_end.split(":")[0], phobias_movie[i].time_code_end.split(":")[1], phobias_movie[i].time_code_end.split(":")[2])) {
+                        add_skip_overlay(hour_to_seconde(phobias_movie[i].time_code.split(":")[0], phobias_movie[i].time_code.split(":")[1], phobias_movie[i].time_code.split(":")[2]), hour_to_seconde(phobias_movie[i].time_code_end.split(":")[0], phobias_movie[i].time_code_end.split(":")[1], phobias_movie[i].time_code_end.split(":")[2]), phobias_movie[i].id_phobia);
+                    } else {
+                        if (document.getElementsByClassName(hour_to_seconde(phobias_movie[i].time_code.split(":")[0], phobias_movie[i].time_code.split(":")[1], phobias_movie[i].time_code.split(":")[2]))[0] != null) {
+                            document.getElementById("skip_button").remove();
+                            document.getElementById("thumb_up_div").remove();
+                            document.getElementById("thumb_down_div").remove();
+                        }
                     }
                 }
             }
@@ -463,7 +463,6 @@ $(document).ready(function () {
             $("#time_end").attr("min", $("#time_start").val());
         });
         $("#pin1").click(function () {
-            console.log(seconde_to_hour(player.currentTime)[0]);
             $("#start_time").val(seconde_to_hour(player.currentTime)[0] + ":" + seconde_to_hour(player.currentTime)[1] + ":" + seconde_to_hour(player.currentTime)[2]);
         });
         $("#pin2").click(function () {
@@ -476,7 +475,6 @@ $(document).ready(function () {
     }
 
     function add_skip_overlay(time_start, time_end, id_phobia) {
-        console.log('overlay');
         if (document.getElementById("skip_button")) {
             return;
         }
@@ -484,7 +482,6 @@ $(document).ready(function () {
         var thumb_down = '<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed"><path d="M240-840h440v520L400-40l-50-50q-7-7-11.5-19t-4.5-23v-14l44-174H120q-32 0-56-24t-24-56v-80q0-7 2-15t4-15l120-282q9-20 30-34t44-14Zm360 80H240L120-480v80h360l-54 220 174-174v-406Zm0 406v-406 406Zm80 34v-80h120v-360H680v-80h200v520H680Z"/></svg>';
         chrome.storage.local.get('auto', (result) => {
             if (result.auto != null) {
-                console.log(result.auto);
                 if (result.auto == 1) {
                     player.pause();
                 } else if (result.auto == 2) {
@@ -502,7 +499,6 @@ $(document).ready(function () {
             default:
                 break;
         }
-        console.log(skip_container);
         var thumb_up_div = document.createElement("div");
         thumb_up_div.id = "thumb_up_div";
         thumb_up_div.className = time_start;
@@ -518,7 +514,6 @@ $(document).ready(function () {
         skip_container.appendChild(skip_button);
         skip_container.appendChild(thumb_up_div);
         skip_container.appendChild(thumb_down_div);
-        console.log(skip_button);
         $("#skip_button").click(function () {
             skip_scene(time_start, time_end);
             document.getElementById("skip_button").remove();
@@ -527,9 +522,9 @@ $(document).ready(function () {
         });
         $("#thumb_up_div").click(function () {
             vote(id_phobia, time_start, "up");
-            if($("#thumb_up_div").hasClass("thumb_up_selected")){
+            if ($("#thumb_up_div").hasClass("thumb_up_selected")) {
                 $("#thumb_up_div").removeClass("thumb_up_selected");
-            }else{
+            } else {
                 $("#thumb_up_div").addClass("thumb_up_selected");
                 $("#thumb_down_div").removeClass("thumb_down_selected");
 
@@ -537,9 +532,9 @@ $(document).ready(function () {
         });
         $("#thumb_down_div").click(function () {
             vote(id_phobia, time_start, "down");
-            if($("#thumb_down_div").hasClass("thumb_down_selected")){
+            if ($("#thumb_down_div").hasClass("thumb_down_selected")) {
                 $("#thumb_down_div").removeClass("thumb_down_selected");
-            }else{
+            } else {
                 $("#thumb_down_div").addClass("thumb_down_selected");
                 $("#thumb_up_div").removeClass("thumb_up_selected");
             }
@@ -574,8 +569,7 @@ $(document).ready(function () {
                     },
                     contentType: "application/json",
                     success: function (data) {
-                        console.log("vote");
-                        vote= data["data"].vote;
+                        vote = data["data"].vote;
                         if (vote == "up") {
                             $("#thumb_up_div").addClass("thumb_up_selected");
                         } else if (vote == "down") {
@@ -650,7 +644,6 @@ $(document).ready(function () {
         var id_phobia = $("#phobias_select").val();
         var start_time = $("#start_time").val();
         var end_time = $("#end_time").val();
-        console.log(id_movie, id_phobia, start_time, end_time);
         if (id_phobia == null) {
             alert("Veuillez selectionner une phobie");
             return;

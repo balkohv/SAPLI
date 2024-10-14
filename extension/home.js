@@ -105,7 +105,6 @@ $(document).ready(function () {
         });
         $('#checkboxes input:not(:checked)').each(function () {
             removed_phobias.push($(this).attr('id'));
-            console.log(phobias,removed_phobias);
         }); $.ajax({
             url: "https://phobia-warning.com/sapli-auth/",
             type: "POST",

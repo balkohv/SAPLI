@@ -69,7 +69,6 @@ $(document).ready(function () {
             password: $("#password").val()
           }),
           success: function (data) {
-            console.log(data);
             $.ajax({
               url: "https://phobia-warning.com/sapli-api/user_api/",
               headers: {
@@ -81,7 +80,6 @@ $(document).ready(function () {
                 password: $("#password").val()
               }),
               success: function (data) {
-                console.log(data);
                 store_browser_id(data['data']);
               }
             });
@@ -117,7 +115,6 @@ $(document).ready(function () {
             password: $("#password_login").val()
           }),
           success: function (data) {
-            console.log(data);
             store_browser_id(data['data']);
           }
         });
