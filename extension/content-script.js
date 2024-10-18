@@ -23,7 +23,6 @@ $(document).ready(function () {
     switch (domain) {
         case "www.netflix.com":
             plateform = "Netflix";
-            console.log("Netflix");
             load_info_netflix();
             function load_info_netflix() {
                 load_in_progress = true;
@@ -74,7 +73,6 @@ $(document).ready(function () {
             }
             break;
         case "www.disneyplus.com"://TODO: recuperer le time code
-            console.log("Disney+");
             plateform = "Disney+";
             load_info_disney();
             function load_info_disney() {
@@ -128,7 +126,6 @@ $(document).ready(function () {
             }
             break;
         case "www.primevideo.com":
-            console.log("Prime Video");
             plateform = "Prime Video";
             load_info_prime();
             function load_info_prime() {
@@ -224,7 +221,6 @@ $(document).ready(function () {
                 type: "GET",
                 contentType: "application/json",
                 success: function (data) {
-                    console.log(data);
                     phobia_array = data["data"];
                 }
             });
@@ -277,7 +273,6 @@ $(document).ready(function () {
                                     "id_movie": movie.id_movie
                                 },
                                 success: function (data) {
-                                    console.log(data);
                                     phobias_movie = data["data"];
                                 }
                             });
@@ -290,7 +285,6 @@ $(document).ready(function () {
 
 
     function info_loaded(title, episode, duration) {
-        console.log("titre:", title, "episode:", episode, "duration:", duration);
         load_in_progress = false;
         $.ajax({
             url: "https://phobia-warning.com/sapli-auth/",
@@ -317,12 +311,10 @@ $(document).ready(function () {
                         duration: duration
                     },
                     success: function (data) {
-                        console.log(data);
                         movie = data["data"];
                         search_phobias();
                     },
                     error: function (data) {
-                        console.log(data);
                         if (data.status == 404) {
                             $.ajax({
                                 method: "POST",
@@ -339,7 +331,6 @@ $(document).ready(function () {
                                     duration: duration
                                 }),
                                 success: function (data) {
-                                    console.log(data);
                                     $.ajax({
                                         method: "GET",
                                         url: "https://phobia-warning.com/sapli-api/movie_api/",
@@ -355,7 +346,6 @@ $(document).ready(function () {
                                             duration: duration
                                         },
                                         success: function (data) {
-                                            console.log(data);
                                             movie = data["data"];
                                             search_phobias();
                                         }
@@ -404,8 +394,8 @@ $(document).ready(function () {
             document.getElementById("sapli-container").style.marginTop = "0px";
             return;
         }
-        var record1 = '<svg id="pin1" style="height: 25px;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><path style="fill:#c73939" d="M32 5a21 21 0 0 0-21 21c0 17 21 33 21 33s21-16 21-33A21 21 0 0 0 32 5zm0 31a10 10 0 1 1 10-10 10 10 0 0 1-10 10z"/></svg>';
-        var record2 = '<svg id="pin2" style="height: 25px;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><path style="fill:#c73939" d="M32 5a21 21 0 0 0-21 21c0 17 21 33 21 33s21-16 21-33A21 21 0 0 0 32 5zm0 31a10 10 0 1 1 10-10 10 10 0 0 1-10 10z"/></svg>';
+        var record1 = '<svg id="pin1" style="height: 25px;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><path style="fill:#656565" d="M32 5a21 21 0 0 0-21 21c0 17 21 33 21 33s21-16 21-33A21 21 0 0 0 32 5zm0 31a10 10 0 1 1 10-10 10 10 0 0 1-10 10z"/></svg>';
+        var record2 = '<svg id="pin2" style="height: 25px;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><path style="fill:#656565" d="M32 5a21 21 0 0 0-21 21c0 17 21 33 21 33s21-16 21-33A21 21 0 0 0 32 5zm0 31a10 10 0 1 1 10-10 10 10 0 0 1-10 10z"/></svg>';
         time = currentTime / 60;
         var currentTimeMinutes = Math.floor(time);
         var currentTimeSeconds = Math.floor((time - currentTimeMinutes) * 60);

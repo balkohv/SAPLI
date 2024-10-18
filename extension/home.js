@@ -1,4 +1,3 @@
-
 $(document).ready(function () {
     var expanded = false;
     var user = [];
@@ -38,6 +37,8 @@ $(document).ready(function () {
                     },
                     success: function (data) {
                         user = data["data"];
+                        $("#nb_point").text(user.points);
+                        $('#badge').text(getbadge(user.points));
                         $.ajax({
                             url: "https://phobia-warning.com/sapli-api/phobia_api/",
                             headers: {
@@ -153,4 +154,24 @@ $(document).ready(function () {
     $("input[type='radio']").click(function () {
         chrome.storage.local.set({ auto: $("input[type='radio']:checked").val() });
     });
+
+    function getbadge(points){
+        if (points < 10) {
+            return "Spectateur";
+        } else if (points < 40) {
+            return "Cin\u00E9phile D\u00E9butant";
+        } else if (points < 100) {
+            return "Critique Amateur";
+        } else if (points < 180) {
+            return "Cin\u00E9aste Passionn\u00E9";
+        } else if (points < 350) {
+            return "R\u00E9alisateur en Herbe";
+        } else if (points < 500) {
+            return "Producteur \u00E9tabli";
+        } else if (points < 1000) {
+            return "Star du Cin\u00E9ma";
+        } else {
+            return "L\u00E9gende d'Hollywood";
+        }
+    }
 });

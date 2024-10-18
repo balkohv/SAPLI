@@ -8,7 +8,7 @@
 .overlay_sapli{
     width: 235px !important;
     height: 125px !important;
-    background-color: rgba(255, 0, 0, 0.5) !important;
+    background-color: #1e1e1eed !important;
     z-index: 100000;
     margin: 20px;
     border-radius: 11px;
@@ -37,7 +37,7 @@
 
 #phobias_select{
     height: 25px;
-    font-size: larger;
+    font-size:revert;
     border-radius: 8px;
     margin: 9px;
     width: 180px;
@@ -72,7 +72,7 @@ svg{
 
 #pin1:hover path,
 #pin2:hover path{
-    fill: #ec2525 !important;
+    fill: #a4a4a4 !important;
 }
 
 #submit:hover{

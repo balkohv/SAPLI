@@ -4,15 +4,15 @@
     "version": "1.0.0",
     "description": "phobia warning dev",
     "icons": {
-      "48": "ressources/des-emoticones-sympas.png",
-      "128": "ressources/des-emoticones-sympas.png"
+      "48": "ressources/logo.png",
+      "128": "ressources/logo.png"
     },
     "action":{
         "default_popup": "pop_up.html",
         "default_icon": {
-            "16": "ressources/des-emoticones-sympas.png",
-            "48": "ressources/des-emoticones-sympas.png",
-            "128": "ressources/des-emoticones-sympas.png"
+            "16": "ressources/logo.png",
+            "48": "ressources/logo.png",
+            "128": "ressources/logo.png"
         }
     },
     "permissions": ["activeTab", "scripting","tabs","nativeMessaging","storage"],
