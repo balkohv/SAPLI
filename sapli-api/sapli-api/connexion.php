@@ -25,8 +25,8 @@
     $output = $json_output?$json_output:$api_output;
     curl_close($ch);
     if($output->status_code == 200){
-        $username ="root";
-        $pwd = "Micheldu15*";  
+        $username ="";
+        $pwd = "";  
         try {
             $db = new PDO('mysql:host=192.168.1.59;port=3306;dbname=phobia_warning',$username,$pwd);
             $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
